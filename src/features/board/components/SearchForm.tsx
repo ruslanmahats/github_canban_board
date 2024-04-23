@@ -6,7 +6,7 @@ import { useAppDispatch } from '../../../app/hooks'
 import { useState } from 'react'
 
 const SearchForm = () => {
-	const [url, setUrl] = useState('https://github.com/facebook/react')
+	const [url, setUrl] = useState('')
 	const dispatch = useAppDispatch<AppDispatch>()
 
 	const urlHandle = (e: React.SyntheticEvent): void => {
@@ -19,9 +19,10 @@ const SearchForm = () => {
 			<Col>
 				<Form onSubmit={(e) => urlHandle(e)}>
 					<InputGroup className='mb-3'>
+						<InputGroup.Text id='inputGroup-sizing-default'>Repo URL:</InputGroup.Text>
 						<Form.Control
-							placeholder='Insert repo url'
-							aria-label='Insert repo url'
+							placeholder='e.g.: https://github.com/facebook/react'
+							aria-label='Insert repo url: '
 							aria-describedby='basic-addon2'
 							value={url}
 							onChange={(e) => setUrl(e.target.value)}

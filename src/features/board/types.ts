@@ -4,7 +4,7 @@ export type TIssue = {
 	title: string
 	id: string
 	number: number
-	createdAt: Date
+	createdAt: string
 	userLogin: string
 	comments: number
 }
@@ -18,11 +18,11 @@ export type TRepoInfo = {
 	stargazersCount: number
 }
 
-export type TIssuesList = {
+type TIssuesList = {
 	[key: string]: TIssue
 }
 
-export type TBoardColumn = {
+type TBoardColumn = {
 	id: string
 	title: string
 	issueIds: string[]
@@ -51,10 +51,11 @@ type TServerRepoInfo = {
 }
 
 type TServerIssue = {
+	assignee: null | { [key: string]: unknown }
 	title: string
 	id: number
 	number: number
-	created_at: Date
+	created_at: string
 	user: { login: string }
 	comments: number
 }

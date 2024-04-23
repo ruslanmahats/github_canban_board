@@ -3,6 +3,7 @@ import { TInitialState, TReturnData } from './types'
 import { addNewIssuesToState, appLocalStorage } from '../../app/utils'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
+import { DropResult } from 'react-beautiful-dnd'
 import { RootState } from '../../app/store'
 
 const { getItemFromLocalStorage, setItemToLocalStorage } = appLocalStorage()
@@ -65,8 +66,22 @@ export const boardSlice = createSlice({
 	name: 'board',
 	initialState,
 	reducers: {
-		moveIssue: (state) => {
-			console.log(state)
+		moveIssue: (state, action) => {
+			const dropResult: DropResult = action.payload
+			const { destination, source, draggableId } = dropResult
+
+			if (!destination) {
+				return
+			}
+
+			if (destination.droppableId === source.droppableId && destination.index === source.index) {
+				return
+			}
+
+			state.boardColumns[source.droppableId].issueIds.splice(source.index, 1)
+			state.boardColumns[destination.droppableId].issueIds.splice(destination.index, 0, draggableId)
+
+			setItemToLocalStorage(state.repoInfo.id, state)
 		},
 	},
 	extraReducers(builder) {
@@ -88,13 +103,18 @@ export const boardSlice = createSlice({
 
 					const newIssues = serverIssues.filter((issue) => !issuesListIds.includes(String(issue.id)))
 
-					const newIssuesIds = addNewIssuesToState(newIssues, state)
+					const [newIssuesIds, newAssignedIssuesIds] = addNewIssuesToState(newIssues, state)
 
 					state.boardColumns['column-1'].issueIds = [
 						...newIssuesIds,
 						...localStorageState.boardColumns['column-1'].issueIds,
 					]
-					state.boardColumns['column-2'].issueIds = localStorageState.boardColumns['column-2'].issueIds
+
+					state.boardColumns['column-2'].issueIds = [
+						...newAssignedIssuesIds,
+						...localStorageState.boardColumns['column-2'].issueIds,
+					]
+
 					state.boardColumns['column-3'].issueIds = localStorageState.boardColumns['column-3'].issueIds
 				} else {
 					state.repoInfo.id = String(serverRepoInfo.id)
@@ -105,11 +125,12 @@ export const boardSlice = createSlice({
 					state.repoInfo.stargazersCount = serverRepoInfo.stargazers_count
 
 					state.issuesList = {}
-					state.boardColumns['column-1'].issueIds = []
 
-					const newIssuesIds = addNewIssuesToState(serverIssues, state)
+					const [newIssuesIds, newAssignedIssuesIds] = addNewIssuesToState(serverIssues, state)
 
 					state.boardColumns['column-1'].issueIds = [...newIssuesIds]
+					state.boardColumns['column-2'].issueIds = [...newAssignedIssuesIds]
+					state.boardColumns['column-3'].issueIds = []
 				}
 
 				setItemToLocalStorage(state.repoInfo.id, state)
@@ -120,7 +141,11 @@ export const boardSlice = createSlice({
 
 			.addCase(fetchBoardInfo.rejected, (state, action) => {
 				state.status = FETCH_STATUS.FAILED
-				state.error = action.error.message ? action.error.message : null
+				if (action.error.code === 'ERR_BAD_REQUEST') {
+					console.error(`${action.error.message}, please check repo url!`)
+				}
+
+				state.error = action.error.message ? `${action.error.message}, please check repo url!` : null
 			})
 	},
 })

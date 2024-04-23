@@ -23,7 +23,7 @@ const IssuesList = ({ title, id, issues }: TIssuesListProps) => {
 				<Droppable droppableId={id}>
 					{(provided, snapshot) => (
 						<Card.Body
-							className={`flex-grow-1 d-flex flex-column gap-2 ${snapshot.isDraggingOver && 'shadow-sm'}`}
+							className={`flex-grow-1 d-flex flex-column ${snapshot.isDraggingOver && 'shadow-sm'}`}
 							ref={provided.innerRef}
 							{...provided.droppableProps}>
 							{issues.map((issue, index) => {

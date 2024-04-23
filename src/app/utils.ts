@@ -14,8 +14,11 @@ export const appLocalStorage = () => {
 	return { getItemFromLocalStorage, setItemToLocalStorage }
 }
 
-export const addNewIssuesToState = <T extends TInitialState>(issues: TServerIssues, state: T): string[] => {
-	return issues.map((issue) => {
+export const addNewIssuesToState = <T extends TInitialState>(issues: TServerIssues, state: T): [string[], string[]] => {
+	const issuesIds: string[] = []
+	const assignedIssuesIds: string[] = []
+
+	issues.forEach((issue) => {
 		state.issuesList[issue.id] = {
 			title: issue.title,
 			id: String(issue.id),
@@ -25,6 +28,20 @@ export const addNewIssuesToState = <T extends TInitialState>(issues: TServerIssu
 			comments: issue.comments,
 		}
 
-		return String(issue.id)
+		if (!issue.assignee) {
+			issuesIds.push(String(issue.id))
+		} else {
+			assignedIssuesIds.push(String(issue.id))
+		}
 	})
+
+	return [issuesIds, assignedIssuesIds]
+}
+
+export const countFormatter = (value: string | number): string => {
+	const arr: Array<string> = String(value).split('')
+
+	arr.splice(-3, 3)
+
+	return `${arr.join('')}K`
 }

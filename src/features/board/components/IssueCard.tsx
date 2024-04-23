@@ -1,6 +1,7 @@
 import { Card } from 'react-bootstrap'
 import { Draggable } from 'react-beautiful-dnd'
 import { TIssue } from '../types'
+import TimeAgo from '../../../components/TimeAgo'
 
 type TIssueCardProps = {
 	issue: TIssue
@@ -14,18 +15,21 @@ const IssueCard = ({ issue, index }: TIssueCardProps) => {
 		<Draggable draggableId={id} index={index}>
 			{(provided, snapshot) => (
 				<Card
-					className={`rounded-0 ${snapshot.isDragging && 'opacity-75'}`}
+					className={`rounded-0 mb-2 ${snapshot.isDragging && 'shadow-sm'}`}
 					{...provided.draggableProps}
 					{...provided.dragHandleProps}
 					ref={provided.innerRef}>
 					<Card.Body>
-						<Card.Title>{`${id}: ${title}`}</Card.Title>
+						<Card.Title>{title}</Card.Title>
 						<Card.Text>
-							#{number} {String(createdAt)}
+							<i>
+								{`#${number} opened `}
+								<TimeAgo time={createdAt} />
+							</i>
 						</Card.Text>
-						<Card.Text className='text-secondary fs-6'>
+						<Card.Subtitle className='text-secondary fs-6'>
 							{userLogin} | Comments: {comments}
-						</Card.Text>
+						</Card.Subtitle>
 					</Card.Body>
 				</Card>
 			)}
