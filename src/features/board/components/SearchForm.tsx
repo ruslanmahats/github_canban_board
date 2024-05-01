@@ -17,7 +17,7 @@ const SearchForm = () => {
 	return (
 		<Row>
 			<Col>
-				<Form onSubmit={(e) => urlHandle(e)}>
+				<Form onSubmit={(e) => urlHandle(e)} data-testid='repo-link-input'>
 					<InputGroup className='mb-3'>
 						<InputGroup.Text id='inputGroup-sizing-default'>Repo URL:</InputGroup.Text>
 						<Form.Control

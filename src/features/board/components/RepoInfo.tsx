@@ -1,7 +1,7 @@
 import { Button, Col, Row } from 'react-bootstrap'
 
 import { TRepoInfo } from '../types'
-import { countFormatter } from '../../../app/utils'
+import { starsCountFormatter } from '../../../app/utils'
 
 export type TRepoInfoProps = {
 	repoInfo: TRepoInfo
@@ -9,8 +9,6 @@ export type TRepoInfoProps = {
 
 const RepoInfo = ({ repoInfo }: TRepoInfoProps) => {
 	const { repoName, repoUrl, repoOwner, repoOwnerUrl, stargazersCount } = repoInfo
-
-	const stars_count = stargazersCount && stargazersCount > 9999 ? countFormatter(stargazersCount) : stargazersCount
 
 	return (
 		<Row className='mb-3'>
@@ -25,7 +23,7 @@ const RepoInfo = ({ repoInfo }: TRepoInfoProps) => {
 							{repoName}
 						</Button>
 						<div>⭐&nbsp;</div>
-						<div className='text-secondary'>{stars_count} stars</div>
+						<div className='text-secondary'>{starsCountFormatter(stargazersCount)} stars</div>
 					</>
 				) : null}
 			</Col>

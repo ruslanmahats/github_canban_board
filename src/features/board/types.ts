@@ -18,7 +18,7 @@ export type TRepoInfo = {
 	stargazersCount: number
 }
 
-type TIssuesList = {
+export type TIssuesList = {
 	[key: string]: TIssue
 }
 

@@ -1,4 +1,4 @@
-import Board from '../features/board/Board'
+import Board from '../../features/board/Board'
 
 const Main = () => {
 	return <Board />

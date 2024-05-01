@@ -1,6 +1,6 @@
 import { FETCH_STATUS, fetchData } from '../../app/fetchConfig'
 import { TInitialState, TReturnData } from './types'
-import { addNewIssuesToState, appLocalStorage } from '../../app/utils'
+import { appLocalStorage, prepareNewIssuesToState } from '../../app/utils'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
 import { DropResult } from 'react-beautiful-dnd'
@@ -8,7 +8,7 @@ import { RootState } from '../../app/store'
 
 const { getItemFromLocalStorage, setItemToLocalStorage } = appLocalStorage()
 
-const initialState: TInitialState = {
+export const initialState: TInitialState = {
 	repoInfo: {
 		id: '',
 		repoName: '',
@@ -103,7 +103,9 @@ export const boardSlice = createSlice({
 
 					const newIssues = serverIssues.filter((issue) => !issuesListIds.includes(String(issue.id)))
 
-					const [newIssuesIds, newAssignedIssuesIds] = addNewIssuesToState(newIssues, state)
+					const [newIssuesIds, newAssignedIssuesIds, newIssuesObj] = prepareNewIssuesToState(newIssues)
+
+					state.issuesList = { ...state.issuesList, ...newIssuesObj }
 
 					state.boardColumns['column-1'].issueIds = [
 						...newIssuesIds,
@@ -124,9 +126,9 @@ export const boardSlice = createSlice({
 					state.repoInfo.repoOwnerUrl = serverRepoInfo.owner.html_url
 					state.repoInfo.stargazersCount = serverRepoInfo.stargazers_count
 
-					state.issuesList = {}
+					const [newIssuesIds, newAssignedIssuesIds, newIssuesObj] = prepareNewIssuesToState(serverIssues)
 
-					const [newIssuesIds, newAssignedIssuesIds] = addNewIssuesToState(serverIssues, state)
+					state.issuesList = { ...newIssuesObj }
 
 					state.boardColumns['column-1'].issueIds = [...newIssuesIds]
 					state.boardColumns['column-2'].issueIds = [...newAssignedIssuesIds]

@@ -1,13 +1,12 @@
 import { DragDropContext, DropResult } from 'react-beautiful-dnd'
 import { boardStateSelectors, moveIssue } from './boardSlice'
+import { useAppDispatch, useAppSelector } from '../../app/hooks'
 
 import IssuesList from './components/IssueList'
 import { Row } from 'react-bootstrap'
-import { useAppDispatch } from '../../app/hooks'
-import { useSelector } from 'react-redux'
 
-const Board = ({}) => {
-	const { boardColumns, columnOrder, issuesList } = useSelector(boardStateSelectors.board)
+const Board = () => {
+	const { boardColumns, columnOrder, issuesList } = useAppSelector(boardStateSelectors.board)
 	const dispatch = useAppDispatch()
 
 	const onDragEnd = (result: DropResult) => {
@@ -16,7 +15,7 @@ const Board = ({}) => {
 
 	return (
 		<DragDropContext onDragEnd={onDragEnd}>
-			<Row>
+			<Row data-testid='board'>
 				{columnOrder.map((columnId) => {
 					const column = boardColumns[columnId]
 					const listIssues = column.issueIds.map((issueId) => issuesList[issueId])

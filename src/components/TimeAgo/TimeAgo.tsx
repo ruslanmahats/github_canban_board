@@ -14,7 +14,7 @@ const TimeAgo = ({ time }: TTimeAgoProps) => {
 	}
 
 	return (
-		<span title='timestamp'>
+		<span title='timestamp' data-testid='time-ago'>
 			<i>{timeAgo}</i>
 		</span>
 	)

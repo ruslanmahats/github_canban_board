@@ -1,4 +1,4 @@
-import { TInitialState, TServerIssues } from '../features/board/types'
+import { TInitialState, TIssuesList, TServerIssues } from '../features/board/types'
 
 export const appLocalStorage = () => {
 	const getItemFromLocalStorage = (localStorageKey: string): TInitialState | null => {
@@ -14,12 +14,13 @@ export const appLocalStorage = () => {
 	return { getItemFromLocalStorage, setItemToLocalStorage }
 }
 
-export const addNewIssuesToState = <T extends TInitialState>(issues: TServerIssues, state: T): [string[], string[]] => {
+export const prepareNewIssuesToState = (issues: TServerIssues): [string[], string[], TIssuesList] => {
 	const issuesIds: string[] = []
 	const assignedIssuesIds: string[] = []
+	const newIssuesObj: TIssuesList = {}
 
 	issues.forEach((issue) => {
-		state.issuesList[issue.id] = {
+		newIssuesObj[issue.id] = {
 			title: issue.title,
 			id: String(issue.id),
 			number: issue.number,
@@ -35,11 +36,15 @@ export const addNewIssuesToState = <T extends TInitialState>(issues: TServerIssu
 		}
 	})
 
-	return [issuesIds, assignedIssuesIds]
+	return [issuesIds, assignedIssuesIds, newIssuesObj]
 }
 
-export const countFormatter = (value: string | number): string => {
-	const arr: Array<string> = String(value).split('')
+export const starsCountFormatter = (num: number): string => {
+	if (num < 10000) {
+		return String(num)
+	}
+
+	const arr: Array<string> = String(num).split('')
 
 	arr.splice(-3, 3)
 
